@@ -1,0 +1,12 @@
+/storage/*.key
+/vendor
+/.idea
+.env
+.env.backup
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+npm-debug.log
+/database/seedsgit
+composer.lock
+restore-perms.sh
