@@ -87,6 +87,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 
         // Helpers
+        Route::get('/get-brains-list', 'HelpersController@getBrainsList');
         Route::get('/get-currency-list', 'HelpersController@getCurrencyList');
         Route::get('/get-network-list', 'HelpersController@getNetworkList');
         Route::get('/get-affiliate-list', 'HelpersController@getAffiliateList');
@@ -95,6 +96,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/get-computer-list', 'HelpersController@getComputerList');
         Route::get('/get-account-list', 'HelpersController@getAccountList');
         Route::get('/get-mobile-room-list', 'HelpersController@getMobileRoomList');
+        Route::get('/get-timetable-select-lists', 'HelpersController@getTimeTableSelectLists');
 
         //MobileAccounts
         Route::get('/get-active-mobile-clubs', 'MobileAccountController@getActiveMobileClubs');

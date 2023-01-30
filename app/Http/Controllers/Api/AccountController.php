@@ -38,11 +38,6 @@ class AccountController extends Controller
             ->filter($filters)
             ->get();
 
-        $networkList = Account::with('room.network')
-            ->get()
-            ->pluck('room.network')
-            ->unique('name')
-            ->pluck('name', 'id');
 
         $affiliateList = $models->pluck('affiliate')
             ->unique()
@@ -57,27 +52,7 @@ class AccountController extends Controller
                 }
             })->pluck('name', 'id');
 
-//        $models = $models->map(function ($item, $k) {
-//            $item->shift = $item->shiftName;
-//            $item->status = $item->statusName;
-//            if ($item->limits_group)
-//                $item->limits_group = trim(implode(' ', $item->limits_group));
-//            else
-//                $item->limits_group = 'Лимитная группа не задана';
-//            return $item;
-//        })
-//            ->groupBy('room.network.name')
-//            ->transform(function ($item, $k) {
-//                return $item->groupBy('disciplines')->transform(function ($item, $k) {
-//                    return $item->groupBy('limits_group')->transform(function ($item, $k) {
-//                        return $item->groupBy('shift_id');
-//                    });
-//                });
-//
-//            });
-
-
-        return compact('models', 'affiliateList', 'networkList');
+        return compact('models', 'affiliateList');
     }
 
     public function show(Account $account)
@@ -284,39 +259,7 @@ class AccountController extends Controller
 
             });
 
-//        $models = $models->mapWithKeys(function ($value, $key) {
-//            $networkId = Network::where('name', $key)->first()->id;
-//            $freeBobIdsCountForNetwork = BobId::where('network_id', $networkId)->whereDoesntHave('accounts', function ($query) {
-//                $query->where('status_id', '<=', Account::STATUS_STOPPED);
-//            })->count();
-//            return [$key . ' - ' . $freeBobIdsCountForNetwork => $value];
-//        });
-
-
-        $accsForLists = Account::whereHas('room', function ($q) {
-            $q->isPlayedNow();
-        })->stoppedOrActive()->with('room.network', 'affiliate')->get();
-
-        $networkList = $accsForLists
-            ->pluck('room.network')
-            ->unique('name')
-            ->pluck('name', 'id');
-
-        $affiliateList = $accsForLists
-            ->pluck('affiliate')
-            ->filter(function ($item) {
-                return $item != null;
-            })
-            ->unique('name')
-            ->mapWithKeys(function ($item) {
-                return [$item['id'] => $item['name']];
-            });
-
-        return [
-            'models' => $models,
-            'networkList' => $networkList,
-            'affiliateList' => $affiliateList
-        ];
+        return $models;
     }
 
     public function profitByMonths(Request $request)

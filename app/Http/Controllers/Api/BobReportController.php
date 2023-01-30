@@ -47,7 +47,7 @@ class BobReportController extends Controller
             'year' => $fils->year,
             'month' => $fils->month
         ])
-            ->get()->pluck('account.room.network')->unique()->sortBy('name');
+            ->get()->pluck('account.room.network')->unique()->sortBy('name')->pluck('name', 'id');
 
         return ['reports' => BobReportResource::collection($reports), 'networkList' => $networkList];
     }
