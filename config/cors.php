@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['https://prometey.initup.ru'],
+    'allowed_origins' => explode(',', env('ALLOWED_ORIGINS', 'http://localhost:*,127.0.0.1:*')),
 
     'allowed_origins_patterns' => [],
 
