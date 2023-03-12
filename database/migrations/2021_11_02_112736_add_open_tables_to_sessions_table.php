@@ -26,7 +26,7 @@ class AddOpenTablesToSessionsTable extends Migration
     public function down()
     {
         Schema::table('sessions', function (Blueprint $table) {
-            $table->integer('open_tables');
+            $table->dropColumn('open_tables');
         });
     }
 }

@@ -26,7 +26,7 @@ class AddTelegramUserIdToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->integer('telegram_user_id');
+            $table->dropColumn('telegram_user_id');
         });
     }
 }
