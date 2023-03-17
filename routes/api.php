@@ -113,7 +113,9 @@ Route::group(['middleware' => ['auth']], function () {
         Route::Resource('/deposits', 'DepositController')->except(['index', 'show']);
         Route::apiResource('/people', 'PersonController');
         Route::apiResource('/affiliates', 'AffiliateController');
+        Route::put('/networks/toggle-timetable/{id}', 'NetworkController@toggleTimetable');
         Route::apiResource('/networks', 'NetworkController');
+
 
         Route::get('/get-proxies-for-room', 'RoomController@getProxiesForRoom');
         Route::Resource('/rooms', 'RoomController');

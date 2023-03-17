@@ -18,6 +18,7 @@ use App\Models\Person;
 use App\Models\Profile;
 use App\Models\Room;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class AccountController extends Controller
 {
@@ -101,7 +102,7 @@ class AccountController extends Controller
             'room.network',
             'currency',
             'activity.user',
-            'bobId.profile',
+//            'bobId.profile',
             'affiliate',
             'proxy',
             'createdBy',
@@ -124,6 +125,7 @@ class AccountController extends Controller
     {
         $validated = $request->validated();
         $validated['created_by'] = auth()->user()->id;
+        Log::info('store', auth()->user()->id);
         $acc = Account::create($validated);
         return $acc->id;
     }

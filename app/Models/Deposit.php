@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Traits\RecordsActivity;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 
 class Deposit extends Transaction
 {
@@ -82,7 +81,7 @@ class Deposit extends Transaction
     {
         parent::boot();
 
-        static::saving(function (Deposit $model) {
+        static::saved(function (Deposit $model) {
             if ($model->reached_balance_date) {
                 $report = BobReport::where([
                     'account_id' => $model->account_id,
@@ -92,7 +91,8 @@ class Deposit extends Transaction
 
 
                 if ($report) {
-                    $report->update(['updated_at' => Carbon::now()]);
+                    $report->updated_at = Carbon::now();
+                    $report->save();
                 }
             }
         });

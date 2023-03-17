@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\BobReport;
+use Illuminate\Support\Facades\Log;
 
 class BobReportObserver
 {
@@ -22,5 +23,11 @@ class BobReportObserver
                 ? $account->currency->id
                 : $account->room->currency->id;
         }
+    }
+
+    public function updating(BobReport $bobReport)
+    {
+        Log::info('bobReport updating');
+        $bobReport->countTotalAndWin();
     }
 }

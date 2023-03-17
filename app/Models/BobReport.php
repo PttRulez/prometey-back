@@ -2,11 +2,9 @@
 
 namespace App\Models;
 
-use App\Observers\BobReportObserver;
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Redirect;
 use App\Filters\BobReportFilter;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class BobReport extends Model
 {
@@ -122,17 +120,18 @@ class BobReport extends Model
 
     public function countTotalAndWin()
     {
+        Log::info('countTotalAndWin');
         $win = 0;
         $total = 0;
 
         if (is_numeric($rate = $this->getCurrencyRate())) {
             $base = $this->bankroll_finish
-                    - $this->bankroll_start
-                    + $this->cashoutsForReport()->sum('amount')
-                    - $this->deposits()->sum('amount');
+                - $this->bankroll_start
+                + $this->cashoutsForReport()->sum('amount')
+                - $this->deposits()->sum('amount');
 
-            $this->win = (int) (($base - $this->nonGameProfits()->sum('amount')) / $rate);
-            $this->total = (int) ($base / $rate);
+            $this->win = (int)(($base - $this->nonGameProfits()->sum('amount')) / $rate);
+            $this->total = (int)($base / $rate);
         } else {
             $this->win = $rate;
             $this->total = $rate;

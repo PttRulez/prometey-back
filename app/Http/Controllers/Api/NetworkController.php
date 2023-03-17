@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Network;
+use Illuminate\Http\Request;
 
 class NetworkController extends Controller
 {
-   public function index()
+    public function index()
     {
         return Network::orderBy('name')->get();
     }
@@ -35,12 +35,18 @@ class NetworkController extends Controller
         $network->delete();
     }
 
+    public function toggleTimetable($id)
+    {
+        $network = Network::find($id);
+        $network->update(['profile_in_timetable' => !$network->profile_in_timetable]);
+    }
+
     public function validateNetwork()
     {
         return request()->validate(
             [
-                'name'  =>  'required',
-                'info'  =>  'nullable'
+                'name' => 'required',
+                'info' => 'nullable'
             ],
             [
                 'name.required' => "Сети нужно имя!"

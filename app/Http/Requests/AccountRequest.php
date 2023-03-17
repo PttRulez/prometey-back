@@ -57,7 +57,7 @@ class AccountRequest extends FormRequest
 
             },
             'brain_id' => 'required|integer',
-            'bob_id' => 'nullable',
+            'bob_id_name' => 'nullable',
             'bob_id_id' => 'nullable',
             'disciplines' => '',
             'limits' => '',

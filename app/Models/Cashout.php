@@ -206,7 +206,8 @@ class Cashout extends Transaction
                 ])->first();
 
                 if ($report) {
-                    $report->update(['updated_at' => Carbon::now()]);
+                    $report->updated_at = Carbon::now();
+                    $report->save();
                 }
             }
         });
