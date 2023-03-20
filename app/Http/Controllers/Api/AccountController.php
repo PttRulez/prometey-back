@@ -8,7 +8,6 @@ use App\Http\Requests\AccountRequest;
 use App\Models\Account;
 use App\Models\Affiliate;
 use App\Models\BobId;
-use App\Models\BobReport;
 use App\Models\Brain;
 use App\Models\Cashout;
 use App\Models\Currency;
@@ -62,32 +61,23 @@ class AccountController extends Controller
             $person = Person::with('accounts.room.network')->where('id', $account->person_id)->first();
         }
         $cashouts = Cashout::with('account.room.network')
-            ->where('account_id', $account->id)
-            ->get()
-            ->map(function ($item) {
-                $item->type = 'cashout';
-                $item->dateToCompare = $item->dateToCompare();
-                return $item;
+            ->where('account_id', $account->id)->get()->sort(function ($a, $b) {
+                if (!$a['left_balance_date'] && !$b['left_balance_date']) {
+                    return $a['ordered_date'] <=> $b['ordered_date'];
+                }
+
+                if (!$a['left_balance_date']) {
+                    return -1;
+                } else if (!$b['left_balance_date']) {
+                    return 1;
+                }
+
+                return -($a['left_balance_date'] <=> $b['left_balance_date']);
             });
 
         $deposits = Deposit::with('account.room.network')
             ->where('account_id', $account->id)
-            ->get()
-            ->map(function ($item) {
-                $item->type = 'deposit';
-                $item->dateToCompare = $item->dateToCompare();
-                return $item;
-            });
-
-        $transactions = $cashouts->merge($deposits);
-
-        $report = BobReport::where([
-            'account_id' => $account->id,
-            'year' => now()->year,
-            'month' => now()->month,
-        ])->first();
-
-        $reportId = $report ? $report->id : 0;
+            ->get();
 
         $arr = [];
         foreach ($account->activity as $activity) {
@@ -102,7 +92,6 @@ class AccountController extends Controller
             'room.network',
             'currency',
             'activity.user',
-//            'bobId.profile',
             'affiliate',
             'proxy',
             'createdBy',
@@ -111,8 +100,8 @@ class AccountController extends Controller
         return [
             'account' => $account,
             'person' => $person ?? null,
-            'transactions' => $transactions,
-            'reportId' => $reportId
+            'cashouts' => array_values($cashouts->toArray()),
+            'deposits' => $deposits,
         ];
     }
 

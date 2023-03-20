@@ -2,12 +2,9 @@
 
 namespace App\Models;
 
-use App\Models\ProxyProvider;
-use App\Models\Account;
-use App\Models\MobileAccount;
+use App\Filters\ProxyFilter;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Filters\ProxyFilter;
 
 class Proxy extends Model
 {
@@ -16,6 +13,11 @@ class Proxy extends Model
     protected $guarded = [];
 
     public $timestamps = false;
+
+    protected $casts = [
+        'active' => 'boolean'
+    ];
+
 
     public function proxyProvider()
     {

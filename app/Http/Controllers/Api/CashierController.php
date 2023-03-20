@@ -3,14 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CashoutResource;
 use App\Models\Cashout;
 use App\Models\Deposit;
 use App\Models\FutureCashout;
 use App\Models\Network;
-use Illuminate\Http\Request;
 use Carbon\Carbon;
-use App\Models\Account;
-use App\Http\Resources\CashoutResource;
+use Illuminate\Http\Request;
 
 class CashierController extends Controller
 {
@@ -69,14 +68,18 @@ class CashierController extends Controller
             $depositsSql = $depositsSql->whereNull('reached_balance_date')->orderBy('id', 'desc');
 
         } else {
-            $depositsSql = $depositsSql->whereMonth('reached_balance_date', $filters['month'])
-                ->whereYear('reached_balance_date', $filters['year'])
-            ->orWhereNull('reached_balance_date');
+            $depositsSql = $depositsSql->where(function ($q) use ($filters) {
+                $q->whereMonth('reached_balance_date', $filters['month'])
+                    ->whereYear('reached_balance_date', $filters['year'])
+                    ->orWhereNull('reached_balance_date');
+            });
 
-            // Отбираем завершенные кэщауты только этого месяца и все пендинг кэшауты (через orWhere большое выражение)
-            $cashoutsSql = $cashoutsSql->whereMonth('left_balance_date', $filters['month'])->whereYear('left_balance_date', $filters['year'])->whereHas('account', function ($query) use ($filters) {
-                $query->where('nickname', 'like', '%' . $filters['nickname'] . '%');
-            })
+            // Отбираем завершенные кэшауты только этого месяца и все пендинг кэшауты (через orWhere большое выражение)
+            $cashoutsSql = $cashoutsSql->whereMonth('left_balance_date', $filters['month'])
+                ->whereYear('left_balance_date', $filters['year'])
+                ->whereHas('account', function ($query) use ($filters) {
+                    $query->where('nickname', 'like', '%' . $filters['nickname'] . '%');
+                })
                 ->orWhere(function ($q) use ($filters) {
                     if ($filters['network_id']) {
                         $q->where(['status_id' => Cashout::STATUS_PENDING])->whereHas('account', function ($query) use ($filters) {
@@ -90,13 +93,15 @@ class CashierController extends Controller
                 });
         }
 
-        $cashoutsSql = $cashoutsSql->whereHas('account', function ($query) use ($filters) {
-            $query->where('nickname', 'like', '%' . $filters['nickname'] . '%');
-        });
+        if ($filters['nickname']) {
+            $cashoutsSql = $cashoutsSql->whereHas('account', function ($query) use ($filters) {
+                $query->where('nickname', 'like', '%' . $filters['nickname'] . '%');
+            });
 
-        $depositsSql = $depositsSql->whereHas('account', function ($query) use ($filters) {
-            $query->where('nickname', 'like', '%' . $filters['nickname'] . '%');
-        });
+            $depositsSql = $depositsSql->whereHas('account', function ($query) use ($filters) {
+                $query->where('nickname', 'like', '%' . $filters['nickname'] . '%');
+            });
+        }
 
         if ($filters['category'] == 'cashouts') {
             $cashouts = $cashoutsSql->get();
