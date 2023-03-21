@@ -9,7 +9,6 @@ use App\Http\Resources\BobReportResource;
 use App\Models\BobReport;
 use App\Models\Cashout;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class BobReportController extends Controller
 {
@@ -17,7 +16,7 @@ class BobReportController extends Controller
     {
 
         $fils = json_decode($request->get('filters'));
-        Log::info(["BobReports request filters", $fils]);
+
         $reports = BobReport::with('account.room.network', 'account.bobId', 'account.brain')
             ->with(['account.deposits' => function ($q) use ($fils) {
                 $q->whereMonth('reached_balance_date', '=', $fils->month)

@@ -3,12 +3,9 @@
 namespace App\Http\Controllers\Api\BobReport;
 
 use App\Http\Controllers\Controller;
-use App\Models\BobReport;
-use Illuminate\Http\Request;
-use Carbon\Carbon;
 use App\Models\Account;
-use Illuminate\Support\Facades\DB;
-use App\Http\Resources\BobReportResource;
+use App\Models\BobReport;
+use Carbon\Carbon;
 
 class CreateMonthController extends Controller
 {
@@ -23,7 +20,7 @@ class CreateMonthController extends Controller
                 $q->whereMonth('created_at', $month);
                 $q->whereYear('created_at', $year);
             }])
-            ->where('status_id', '<', Account::STATUS_STOPPED)
+            ->where('status_id', '<=', Account::STATUS_STOPPED)
             ->whereDoesntHave('bobReports', function ($q) use ($month, $year) {
                 $q->where([
                     'month' => $month,

@@ -25,7 +25,7 @@ class AccountController extends Controller
      * @param Request $request
      * @return Account[]|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
      */
-    public function index(Request $request, AccountFilter $filters)
+    public function index(AccountFilter $filters)
     {
 //        $models = $this->accountRepository->getIndex();
         $models = Account::with([

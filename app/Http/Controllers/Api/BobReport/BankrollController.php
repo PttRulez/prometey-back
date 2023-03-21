@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api\BobReport;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\BobReport;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class BankrollController extends Controller
 {
@@ -32,9 +34,20 @@ class BankrollController extends Controller
             'year' => $request->get('year')
         ])->get();
 
-        foreach ($reports as $report) {
-            $report->copyStartBankrollFromPrevious();
-        }
+//        foreach ($reports as $report) {
+//            $report->copyStartBankrollFromPrevious();
+//        }
+
+        DB::transaction(function () use ($reports) {
+            $reports->each(function ($report) {
+                Log::info($report);
+                $report->copyStartBankrollFromPrevious();
+                $report->save();
+            });
+        });
+        $reports->each(function ($item, $key) {
+            $item->save();
+        });
 
         return [
             'message' => 'В отчете за ' . $monthList[$request->get('month')]
@@ -42,7 +55,7 @@ class BankrollController extends Controller
         ];
     }
 
-     // Апдейт банкролла одного отчёта когда нажимаем календарик
+    // Апдейт банкролла одного отчёта когда нажимаем календарик
     public function updateBankrollStart(Request $request)
     {
         $bobReport = BobReport::find($request->get('id'));
