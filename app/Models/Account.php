@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Filters\AccountFilter;
+use App\Traits\RecordsActivity;
 use Carbon\Carbon;
 
 class Account extends MyModel
