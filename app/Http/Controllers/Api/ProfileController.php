@@ -28,7 +28,10 @@ class ProfileController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|unique:profiles,name',
+            'name' => Rule::unique('profiles', 'name')->where(function ($q) {
+                Log::info(request('contract_id'));
+                $q->where('contract_id', request('contract_id'));
+            }),
             'contract_id' => 'required',
             "shift_id" => 'nullable',
             'limits' => 'required',
