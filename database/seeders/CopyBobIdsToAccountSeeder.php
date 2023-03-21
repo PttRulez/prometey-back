@@ -18,18 +18,18 @@ class CopyBobIdsToAccountSeeder extends Seeder
 
         $account->each(function ($item, $key) {
 
-            if ($item->bob_id_id) {
+            if (!$item->bob_id_name) {
                 $bobId = $item->bobId;
+
                 if ($bobId) {
-                    $item->bob_id = $bobId->bob_id;
+                    $item->bob_id_name = $bobId->bob_id;
                 } else {
-                    $item->bob_id = '';
+                    $item->bob_id_name = '';
                 }
 
-            } else {
-                $item->bob_id = "";
+                $item->save();
             }
-            $item->save();
+
         });
     }
 }
