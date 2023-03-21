@@ -7,7 +7,7 @@ use Carbon\Carbon;
 
 class Account extends MyModel
 {
-//    use RecordsActivity;
+    use RecordsActivity;
 
     protected $guarded = [];
 
