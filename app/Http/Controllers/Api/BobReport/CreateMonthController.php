@@ -20,7 +20,7 @@ class CreateMonthController extends Controller
                 $q->whereMonth('created_at', $month);
                 $q->whereYear('created_at', $year);
             }])
-            ->where('status_id', '<=', Account::STATUS_STOPPED)
+            ->where('status_id', '=', Account::STATUS_ACTIVE)
             ->whereDoesntHave('bobReports', function ($q) use ($month, $year) {
                 $q->where([
                     'month' => $month,

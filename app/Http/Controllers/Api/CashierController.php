@@ -112,6 +112,20 @@ class CashierController extends Controller
             $deposits = $depositsSql->get();
         }
 
+        $cashouts = $cashouts->sort(function ($a, $b) {
+            if (!$a['left_balance_date'] && !$b['left_balance_date']) {
+                return $a['ordered_date'] <=> $b['ordered_date'];
+            }
+
+            if (!$a['left_balance_date']) {
+                return -1;
+            } else if (!$b['left_balance_date']) {
+                return 1;
+            }
+
+            return -($a['left_balance_date'] <=> $b['left_balance_date']);
+        });
+
         return [
             'cashouts' => $cashouts,
             'deposits' => $deposits,
