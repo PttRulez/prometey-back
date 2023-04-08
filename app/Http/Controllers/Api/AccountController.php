@@ -92,6 +92,7 @@ class AccountController extends Controller
             'currency',
             'activity.user',
             'affiliate',
+            'profile',
             'proxy',
             'createdBy',
         ]);

@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\Profile;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
@@ -19,7 +18,7 @@ class ProfileController extends Controller
                 return $q->with('activeAccounts');
             }])
             ->with(['accounts' => function ($q) {
-                return $q->where('status_id', '=', Account::STATUS_ACTIVE);
+                return $q->where('status_id', '<=', Account::STATUS_STOPPED);
             }])
             ->filter($filters)
             ->get();
