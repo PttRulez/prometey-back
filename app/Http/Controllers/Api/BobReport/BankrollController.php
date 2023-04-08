@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\BobReport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class BankrollController extends Controller
 {
@@ -40,7 +39,6 @@ class BankrollController extends Controller
 
         DB::transaction(function () use ($reports) {
             $reports->each(function ($report) {
-                Log::info($report);
                 $report->copyStartBankrollFromPrevious();
                 $report->save();
             });

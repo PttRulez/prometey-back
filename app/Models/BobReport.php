@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Filters\BobReportFilter;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
 
 class BobReport extends Model
 {
@@ -120,7 +119,6 @@ class BobReport extends Model
 
     public function countTotalAndWin()
     {
-        Log::info('countTotalAndWin');
         $win = 0;
         $total = 0;
 

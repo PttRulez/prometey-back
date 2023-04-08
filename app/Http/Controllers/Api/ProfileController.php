@@ -28,7 +28,6 @@ class ProfileController extends Controller
     {
         $request->validate([
             'name' => Rule::unique('profiles', 'name')->where(function ($q) {
-                Log::info(request('contract_id'));
                 $q->where('contract_id', request('contract_id'));
             }),
             'contract_id' => 'required',
@@ -49,7 +48,6 @@ class ProfileController extends Controller
     {
         $rules = [
             'name' => Rule::unique('profiles', 'name')->where(function ($q) {
-                Log::info(request('contract_id'));
                 $q->where('contract_id', request('contract_id'));
             })->ignore($id),
 

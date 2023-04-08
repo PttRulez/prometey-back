@@ -2,14 +2,12 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\Session;
 use App\Models\User;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Notification;
-use App\Notifications\Telegram\ZeroTables;
 use App\Notifications\Telegram\Delimeter;
 use App\Notifications\Telegram\LongNoInfo;
+use App\Notifications\Telegram\ZeroTables;
+use Illuminate\Console\Command;
 
 class TelegramProblematicMessages extends Command
 {
@@ -57,7 +55,6 @@ class TelegramProblematicMessages extends Command
                             $user->notify(new ZeroTables($session->account->nickname));
                             continue;
                         } catch (\Exception $e) {
-                            Log::error('Zero Tables:' . $session->account->nickname . $e->getMessage());
                             break;
                         }
                     }
@@ -65,7 +62,6 @@ class TelegramProblematicMessages extends Command
                         try {
                             $user->notify(new LongNoInfo($session->account->nickname));
                         } catch (\Exception $e) {
-                            Log::error('No Info:' . $session->account->nickname . $e->getMessage());
                             break;
                         }
                     }
@@ -73,7 +69,6 @@ class TelegramProblematicMessages extends Command
                 try {
                     $user->notify(new Delimeter);
                 } catch (\Exception $e) {
-                    Log::error('Delimeter:' . $session->account->nickname . $e->getMessage());
                     continue;
                 }
             }

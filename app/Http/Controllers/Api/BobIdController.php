@@ -7,14 +7,11 @@ use App\Http\Controllers\Controller;
 use App\Models\BobId;
 use App\Models\Network;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class BobIdController extends Controller
 {
     public function index(Request $request, BobIdFilter $filters)
     {
-        Log::debug('request', request()->all());
-
         $bobIds = BobId::orderBy('bob_id')->with('network')
             ->with(['activeAccounts' => function ($q) {
                 $q->with([

@@ -26,7 +26,6 @@ class BobReportObserver
 
     public function updating(BobReport $bobReport)
     {
-        Log::info('bobReport updating');
         $bobReport->countTotalAndWin();
     }
 }
