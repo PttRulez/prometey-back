@@ -72,6 +72,7 @@ class BobReport extends Model
         ])
             ->whereMonth('left_balance_date', $this->month)
             ->whereYear('left_balance_date', $this->year)
+            ->with('account')
             ->get()->map(function ($item) {
                 $item->dates = $item->dates();
                 return $item;
@@ -121,8 +122,8 @@ class BobReport extends Model
     {
         $win = 0;
         $total = 0;
-
-        if (is_numeric($rate = $this->getCurrencyRate())) {
+        $rate = $this->getCurrencyRate();
+        if ($rate) {
             $base = $this->bankroll_finish
                 - $this->bankroll_start
                 + $this->cashoutsForReport()->sum('amount')
@@ -131,8 +132,8 @@ class BobReport extends Model
             $this->win = (int)(($base - $this->nonGameProfits()->sum('amount')) / $rate);
             $this->total = (int)($base / $rate);
         } else {
-            $this->win = $rate;
-            $this->total = $rate;
+            $this->win = 0;
+            $this->total = 0;
         }
 
         return $this;
@@ -156,15 +157,12 @@ class BobReport extends Model
     {
         $currency = $this->currency;
 
-        if ($currency->id == 1)
-            return 1;
-
         if ($currency) {
             $rate = $currency->getRate($this->year, $this->month);
             if ($rate)
                 return $rate;
             else {
-                return 1111111;
+                return 0;
             }
         }
     }

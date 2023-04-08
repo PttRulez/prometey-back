@@ -39,8 +39,9 @@ class BankrollController extends Controller
 
         DB::transaction(function () use ($reports) {
             $reports->each(function ($report) {
-                $report->copyStartBankrollFromPrevious();
-                $report->save();
+                $report->copyStartBankrollFromPrevious()
+                    ->countTotalAndWin()
+                    ->save();
             });
         });
         $reports->each(function ($item, $key) {
